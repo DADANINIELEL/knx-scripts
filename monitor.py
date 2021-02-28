@@ -28,7 +28,7 @@ def show_help():
 
 async def monitor(address_filters):
     """Set telegram_received_cb within XKNX and connect to KNX/IP device in daemon mode."""
-    xknx = XKNX(daemon_mode=True)
+    xknx = XKNX(config='xknx.yaml', daemon_mode=True)
     xknx.telegram_queue.register_telegram_received_cb(
         telegram_received_cb, address_filters
     )
