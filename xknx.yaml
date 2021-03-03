@@ -2,10 +2,7 @@ general:
   own_address: "15.15.249"
 
 connection:
-  tunneling:
-    gateway_ip: "212.73.51.254"
-    gateway_port: "36713"
-    route_back: "True"
+  auto:
 
 
 
