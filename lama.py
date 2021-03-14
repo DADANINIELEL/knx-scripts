@@ -1,3 +1,5 @@
+import asyncio
+
 class Lama(object):
     S_HALT = C_HALT = 0b0000000000000001
     S_ACK = C_START = 0b0000000000000010
@@ -18,65 +20,76 @@ class Lama(object):
     
     def __init__(self, *args):
         super(Lama, self).__init__(*args)
-        self.input_regs = [0, 0]  # SPOS SCON
-        self.output_regs = [0, 0]  # CPOS CCON
-
+        self._input_regs = [0, 0]  # SPOS SCON
+        self._output_regs = [0, 0]  # CPOS CCON
+        self.position = 0
+     
+    
+    @property
+    def position(self):
+        return self._position
+    
+    @position.setter
+    def position(self, value: int):
+        self._position = value
+        self._output_regs[1] = value << 8
+            
     # Get the status bits
     def is_HALT(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_HALT) 
+        return bool(self._input_regs[0] & Lama.S_HALT) 
 
     def is_ACK(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_ACK)
+        return bool(self._input_regs[0] & Lama.S_ACK)
 
     def is_MC(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_MC)
+        return bool(self._input_regs[0] & Lama.S_MC)
 
     def is_TEACH(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_TEACH)
+        return bool(self._input_regs[0] & Lama.S_TEACH)
     
     def is_MOV(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_MOV)
+        return bool(self._input_regs[0] & Lama.S_MOV)
     
     def is_FOLERR(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_FOLERR)
+        return bool(self._input_regs[0] & Lama.S_FOLERR)
 
     def is_STILL(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_STILL)
+        return bool(self._input_regs[0] & Lama.S_STILL)
     
     def is_REF(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_REF)
+        return bool(self._input_regs[0] & Lama.S_REF)
 
     def is_ENABLED(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_ENABLED)
+        return bool(self._input_regs[0] & Lama.S_ENABLED)
 
     def is_OPEN(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_OPEN)
+        return bool(self._input_regs[0] & Lama.S_OPEN)
 
-    def is_WARN(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_WARN)
+    def is_WA
+    Lama.S_WARN)
 
     def is_FAULT(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_FAULT)
+        return bool(self._input_regs[0] & Lama.S_FAULT)
 
     def is_VLOAD(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_VLOAD)
+        return bool(self._input_regs[0] & Lama.S_VLOAD)
 
     def is_FCT(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_FCT)
+        return bool(self._input_regs[0] & Lama.S_FCT)
 
     def is_OPM1(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_OPM1)
+        return bool(self._input_regs[0] & Lama.S_OPM1)
 
     def is_OPM2(self) -> bool:
-        return bool(self.input_regs[0] & Lama.S_OPM2)
+        return bool(self._input_regs[0] & Lama.S_OPM2)
 
     # Set bits for operation
     def set_bit(self, bit_to_set: int, bit_value: bool):
         # HALT START
         if bit_value:
-            self.output_regs[0] |= bit_to_set
+            self._output_regs[0] |= bit_to_set
         else:
-            self.output_regs[0] &= ~bit_to_set
+            self._output_regs[0] &= ~bit_to_set
             
     def set_HALT(self, setbit: bool) -> None:
         self.set_bit(Lama.C_HALT, setbit)
@@ -120,14 +133,27 @@ class Lama(object):
     def set_OPM2(self, setbit: bool) -> None:
         self.set_bit(Lama.C_OPM2, setbit)
     
-    def quitar_freno(self):
-        self.
+    async def quitar_freno(self):
+        #disable and disable brake
+        self.set_ENABLE(False)
+        self.set_BRAKE(False)
+        await asyncio.sleep(1)
+    
+    async def move_to_pos(self, pos: int) -> int:
+        # activate pos
+        self.position = pos
+        await asyncio.sleep(1)
+        # enable
+        # stop
+        # is stop?
+        # set start
+        # is ack?
+        # set start false
+        # mc complete? 
+        # return pos
+        
+    async def clear_error(self):
+        await asyncio.sleep(1)
+        
+    
 
-
-l = Lama()
-
-print(l.is_HALT())
-print(l.is_ACK())
-print(l.is_MC())
-l.set_LOCK(True)
-print(l.output_regs[0])
