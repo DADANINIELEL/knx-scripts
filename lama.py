@@ -1,6 +1,65 @@
 import asyncio
+from xknx.devices import Fan 
+ from xknx.telegram import Telegram
 
-class Lama(object):
+class LamaKNX(Fan):
+     def __init__(
+        self,
+        xknx: "XKNX",
+        name: str,
+        group_address_speed: Optional["GroupAddressableType"] = None,
+        group_address_speed_state: Optional["GroupAddressableType"] = None,
+        group_address_oscillation: Optional["GroupAddressableType"] = None,
+        group_address_oscillation_state: Optional["GroupAddressableType"] = None,
+        device_updated_cb: Optional[DeviceCallbackType] = None,
+        max_step: Optional[int] = None,
+    ):
+        """Initialize fan class."""
+        # pylint: disable=too-many-arguments
+        super().__init__(xknx, name, device_updated_cb)
+
+        self.speed: Union[RemoteValueDptValue1Ucount, RemoteValueScaling]
+        self.mode = FanSpeedMode.STEP if max_step is not None else FanSpeedMode.PERCENT
+        self.max_step = max_step
+
+        if self.mode == FanSpeedMode.STEP:
+            self.speed = RemoteValueDptValue1Ucount(
+                xknx,
+                group_address_speed,
+                group_address_speed_state,
+                device_name=self.name,
+                feature_name="Speed",
+                after_update_cb=self.after_update,
+            )
+        else:
+            self.speed = RemoteValueScaling(
+                xknx,
+                group_address_speed,
+                group_address_speed_state,
+                device_name=self.name,
+                feature_name="Speed",
+                after_update_cb=self.after_update,
+                range_from=0,
+                range_to=100,
+            )
+
+        self.oscillation = RemoteValueSwitch(
+            xknx,
+            group_address_oscillation,
+            group_address_oscillation_state,
+            device_name=self.name,
+            feature_name="Oscillation",
+            after_update_cb=self.after_update,
+        )
+    async def process_group_read(self, telegram: Telegram) -> None:
+        """Process incoming GroupValueRead telegram."""
+        pass
+     async def process_group_write(self, telegram: Telegram) -> None:
+        """Process incoming GroupValueWrite telegrams."""
+        pass
+    
+
+class LamaModbusTCP(object):
     S_HALT = C_HALT = 0b0000000000000001
     S_ACK = C_START = 0b0000000000000010
     S_MC = C_HOM = 0b0000000000000100
@@ -20,6 +79,7 @@ class Lama(object):
     
     def __init__(self, *args):
         super(Lama, self).__init__(*args)
+        #incluir argumentos para inicializar la lama modbusTCP, IP:port
         self._input_regs = [0, 0]  # SPOS SCON
         self._output_regs = [0, 0]  # CPOS CCON
         self.position = 0
