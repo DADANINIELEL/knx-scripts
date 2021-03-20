@@ -198,4 +198,4 @@ class LamaTest(object):
     
 
 lama_1 = LamaTest('192.168.25.101', 502) #init 192.168.25.101:502   
-print(Text.from_markup(str(lama)))
+print(Text.from_markup(str(lama_1)))
