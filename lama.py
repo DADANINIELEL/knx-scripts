@@ -262,7 +262,7 @@ class Lama(object):
         self.position = pos
         self.set_ENABLE(True)
         self.set_STOP(True)
-        with create_connection(self.ip, self.port) as con:
+        with create_connection(address=(self.ip, self.port)) as con:
             await self.write(con)
             await self.read(con)
             while not self.is_HALT():
