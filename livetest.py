@@ -1,3 +1,5 @@
+import os
+import time
 import rich
 from rich import print
 from rich.text import Text
@@ -176,39 +178,35 @@ class LamaTest(object):
     
     def read(self, client):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
-        print(type(message))
-        print(message)
         response = tcp.send_message(message, client)
-        print(type(response))
-        print(response)
+        os.system('clear')
+        print(Text.from_markup(str(self)))            
         self._input_regs=response
     
     def write(self, client):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
-        print(type(message))
-        print(message)
         response = tcp.send_message(message, client)
-        print(type(response))
-        print(response)
+        os.system('clear')
+        print(Text.from_markup(str(self)))            
             
     def move_to_pos(self, pos: int) -> int:
         # activate pos
+        os.system('clear')
         self.set_clear()
         self.position = pos
         self.set_ENABLE(True)
         self.set_STOP(True)
         with create_connection(address=(self.ip, self.port)) as con:
             self.read(con)
-            print(Text.from_markup(str(self)))            
+            time.sleep(3)
             self.write(con)
-            print(Text.from_markup(str(self)))            
+            time.sleep(3)
             self.read(con)
-            print(Text.from_markup(str(self)))            
+            time.sleep(3)
             self.set_ENABLE(False)
             self.write(con)
-            print(Text.from_markup(str(self)))            
+            time.sleep(3)
             self.read(con)
-            print(Text.from_markup(str(self)))            
             #while not self.is_HALT():
             #    await self.read(con)
     
