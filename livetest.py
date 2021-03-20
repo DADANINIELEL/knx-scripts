@@ -173,7 +173,7 @@ class LamaTest(object):
     def set_OPM2(self, setbit: bool) -> None:
         self.set_bit(LamaTest.C_OPM2, setbit)
     
-    def set_clear(self) -> None:
+    def set_clear_regs(self) -> None:
         self._output_regs=[0,0,0,0]
     
     def read(self, client):
@@ -188,11 +188,24 @@ class LamaTest(object):
         response = tcp.send_message(message, client)
         os.system('clear')
         print(Text.from_markup(str(self)))            
+    
+    def reset_errors(self):
+        with create_connection(address=(self.ip, self.port)) as con:
+            self.read(con)
+            self.set_RESET(True)
+            self.write(con)
+            time.sleep(1)
+            self.read(con)
+            if self.is_FAULT():
+                return 1
+            else:
+                return 0
             
     def move_to_pos(self, pos: int) -> int:
         # activate pos
         os.system('clear')
-        self.set_clear()
+        self.reset_errors()
+        self.set_clear_regs()
         self.position = pos
         self.set_ENABLE(True)
         self.set_STOP(True)
