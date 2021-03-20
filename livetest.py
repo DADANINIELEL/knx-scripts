@@ -184,8 +184,12 @@ class LamaTest(object):
     
     def write(self, client):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
+        print(type(message))
+        print(message)
         response = tcp.send_message(message, client)
-        
+        print(type(response))
+        print(response)
+            
     def move_to_pos(self, pos: int) -> int:
         # activate pos
         self.set_clear()
@@ -195,10 +199,15 @@ class LamaTest(object):
         with create_connection(address=(self.ip, self.port)) as con:
             self.read(con)
             print(Text.from_markup(str(self)))            
-            #self.write(con)
-            #print(Text.from_markup(str(self)))            
-            #self.read(con)
-            #print(Text.from_markup(str(self)))            
+            self.write(con)
+            print(Text.from_markup(str(self)))            
+            self.read(con)
+            print(Text.from_markup(str(self)))            
+            self.set_ENABLE(False)
+            self.write(con)
+            print(Text.from_markup(str(self)))            
+            self.read(con)
+            print(Text.from_markup(str(self)))            
             #while not self.is_HALT():
             #    await self.read(con)
     
