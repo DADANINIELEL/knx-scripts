@@ -9,7 +9,7 @@ def bits(number: int = 0):
     ''' Devuelve los bits de un registro modbus (2 bytes)
     '''
     for i in range(16):
-        yield (number >> i) & 1
+        yield (number << i) & 1
 
 sconspos = 'OPM1 OPM2 FCT VLoad Fault Warn Op_En Enable Ref Still FolErr Mov Teach MC ACK Halt'
 cconcpos = 'OPM1 OPM2 Lock - Reset Brake Stop Enable - Clear Teach JogN JogP Hom Start Halt'
