@@ -211,7 +211,7 @@ class LamaTest(object):
                 self.write(con)
                 while not self.is_ACK():
                     self.read(con)
-                self.set_start(False)
+                self.set_START(False)
                 self.write(con)
                 self.read(con)
                 while not self.is_MC():
