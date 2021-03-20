@@ -6,7 +6,7 @@ import rich
 from rich import print
 from rich.text import Text
 import lama
-from lama import LamaModbusTCP
+from lama import Lama
 
 async def show_status(lama):
     while True:
