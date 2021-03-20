@@ -176,7 +176,10 @@ class LamaTest(object):
     
     def read(self, client):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
+        print(type(message))
+        print(message)
         response = tcp.send_message(message, client)
+        print(type(response))
         print(response)
     
     def write(self, client):
