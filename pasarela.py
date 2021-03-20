@@ -18,7 +18,7 @@ async def show_status(lama):
 
 async def main():
     #xknx = XKNX(config='xknx.yaml', daemon_mode=True)
-    lama_1 = LamaModbusTCP('192.168.25.101', 502) #init 192.168.25.101:502   
+    lama_1 = Lama('192.168.25.101', 502) #init 192.168.25.101:502   
     
     await lama_1.move_to_pos(6)
     await asyncio.sleep(5)

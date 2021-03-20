@@ -81,7 +81,7 @@ sconspos_textos = [f'{b:^6}' for b in bits_text]
 bits_text = cconcpos.split()
 cconcpos_textos = [f'{b:^6}' for b in bits_text]
 
-class LamaModbusTCP(object):
+class Lama(object):
     S_HALT = C_HALT = 0b0000000000000001
     S_ACK = C_START = 0b0000000000000010
     S_MC = C_HOM = 0b0000000000000100
