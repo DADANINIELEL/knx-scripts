@@ -1,73 +1,10 @@
-import asyncio
-from os import truncate
-from socket import create_connection
-from umodbus import conf
-from umodbus.client import tcp
 import rich
 from rich import print
 from rich.text import Text
+from socket import create_connection
+from umodbus import conf
+from umodbus.client import tcp
 
-#from xknx.devices import Fan 
-#from xknx.telegram import Telegram
-
-
-'''
-class LamaKNX(Fan):
-     def __init__(
-        self,
-        xknx: "XKNX",
-        name: str,
-        group_address_speed: Optional["GroupAddressableType"] = None,
-        group_address_speed_state: Optional["GroupAddressableType"] = None,
-        group_address_oscillation: Optional["GroupAddressableType"] = None,
-        group_address_oscillation_state: Optional["GroupAddressableType"] = None,
-        device_updated_cb: Optional[DeviceCallbackType] = None,
-        max_step: Optional[int] = None,
-    ):
-        """Initialize fan class."""
-        # pylint: disable=too-many-arguments
-        super().__init__(xknx, name, device_updated_cb)
-
-        self.speed: Union[RemoteValueDptValue1Ucount, RemoteValueScaling]
-        self.mode = FanSpeedMode.STEP if max_step is not None else FanSpeedMode.PERCENT
-        self.max_step = max_step
-
-        if self.mode == FanSpeedMode.STEP:
-            self.speed = RemoteValueDptValue1Ucount(
-                xknx,
-                group_address_speed,
-                group_address_speed_state,
-                device_name=self.name,
-                feature_name="Speed",
-                after_update_cb=self.after_update,
-            )
-        else:
-            self.speed = RemoteValueScaling(
-                xknx,
-                group_address_speed,
-                group_address_speed_state,
-                device_name=self.name,
-                feature_name="Speed",
-                after_update_cb=self.after_update,
-                range_from=0,
-                range_to=100,
-            )
-
-        self.oscillation = RemoteValueSwitch(
-            xknx,
-            group_address_oscillation,
-            group_address_oscillation_state,
-            device_name=self.name,
-            feature_name="Oscillation",
-            after_update_cb=self.after_update,
-        )
-    async def process_group_read(self, telegram: Telegram) -> None:
-        """Process incoming GroupValueRead telegram."""
-        pass
-     async def process_group_write(self, telegram: Telegram) -> None:
-        """Process incoming GroupValueWrite telegrams."""
-        pass
-'''    
 def bits(number: int = 0):
     ''' Devuelve los bits de un registro modbus (2 bytes)
     '''
@@ -81,7 +18,7 @@ sconspos_textos = [f'{b:^6}' for b in bits_text]
 bits_text = cconcpos.split()
 cconcpos_textos = [f'{b:^6}' for b in bits_text]
 
-class Lama(object):
+class LamaTest(object):
     S_HALT = C_HALT = 0b0000000000000001
     S_ACK = C_START = 0b0000000000000010
     S_MC = C_HOM = 0b0000000000000100
@@ -108,8 +45,6 @@ class Lama(object):
         self.ip = client_ip
         self.port = client_port
 
-    
-
     def __str__(self) -> str:
         global sconspos_textos, cconcpos_textos
         me_sconspos = ''
@@ -127,7 +62,7 @@ class Lama(object):
         me_position = self.position
         me_str = f'SCONSPOS:{me_sconspos}\n'+f'CCONCPOS:{me_cconcpos}\n'+f'POS:{me_position}'
         return me_str
-    
+
     @property
     def position(self):
         return self._position
@@ -136,8 +71,8 @@ class Lama(object):
     def position(self, value: int):
         self._position = value
         self._output_regs[1] = value << 8
-            
-    # Get the status bits
+
+        # Get the status bits
     def is_HALT(self) -> bool:
         return bool(self._input_regs[0] & Lama.S_HALT) 
 
@@ -239,57 +174,28 @@ class Lama(object):
     def set_clear(self) -> None:
         self._output_regs=[0,0,0,0]
     
-    async def read(self, client):
+    def read(self, client):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
         response = tcp.send_message(message, client)
         print(response)
     
-    async def write(self, client):
+    def write(self, client):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
         response = tcp.send_message(message, client)
-    
-    async def quitar_freno(self):
-        #disable and disable brake
-        self.set_clear()
-        self.set_ENABLE(False)
-        self.set_BRAKE(False)
-        await asyncio.sleep(1)
-    
-    async def move_to_pos(self, pos: int) -> int:
+        
+    def move_to_pos(self, pos: int) -> int:
         # activate pos
         self.set_clear()
         self.position = pos
         self.set_ENABLE(True)
         self.set_STOP(True)
         with create_connection(address=(self.ip, self.port)) as con:
-            await self.write(con)
-            await self.read(con)
-            while not self.is_HALT():
-                await self.read(con)
-            self.set_START(True)
-            await self.write(con)
-            await self.read(con)
-            while not self.is_ACK():
-                await self.read(con)
-            self.set_START(False)
-            await self.write()
-            await self.read()
-            while not self.is_MC():
-                await self.read(con)
-            self.set_ENABLE(False)     
-            await self.write()
-            
-        # enable
-        # stop
-        # is stop?
-        # set start
-        # is ack?
-        # set start false
-        # mc complete? 
-        # return pos
-        
-    async def clear_error(self):
-        await asyncio.sleep(1)
-        
+            self.write(con)
+            self.read(con)
+            #while not self.is_HALT():
+            #    await self.read(con)
+    
     
 
+lama_1 = LamaTest('192.168.25.101', 502) #init 192.168.25.101:502   
+print(Text.from_markup(str(lama)))
