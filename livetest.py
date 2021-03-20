@@ -181,6 +181,7 @@ class LamaTest(object):
         response = tcp.send_message(message, client)
         print(type(response))
         print(response)
+        self._input_regs=response
     
     def write(self, client):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
