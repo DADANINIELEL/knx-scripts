@@ -190,8 +190,12 @@ class LamaTest(object):
         self.set_ENABLE(True)
         self.set_STOP(True)
         with create_connection(address=(self.ip, self.port)) as con:
-            self.write(con)
             self.read(con)
+            print(Text.from_markup(str(self)))            
+            #self.write(con)
+            #print(Text.from_markup(str(self)))            
+            #self.read(con)
+            #print(Text.from_markup(str(self)))            
             #while not self.is_HALT():
             #    await self.read(con)
     
@@ -199,3 +203,4 @@ class LamaTest(object):
 
 lama_1 = LamaTest('192.168.25.101', 502) #init 192.168.25.101:502   
 print(Text.from_markup(str(lama_1)))
+lama_1.move_to_pos(1)
