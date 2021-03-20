@@ -196,6 +196,7 @@ class LamaTest(object):
         self.position = pos
         self.set_ENABLE(True)
         self.set_STOP(True)
+        self.set_HALT(True)
         with create_connection(address=(self.ip, self.port)) as con:
             self.read(con)
             time.sleep(3)
@@ -203,10 +204,19 @@ class LamaTest(object):
             time.sleep(3)
             self.read(con)
             time.sleep(3)
-            self.set_ENABLE(False)
-            self.write(con)
-            time.sleep(3)
-            self.read(con)
+            test_positions = [1, 3, 6, 1, 6, 2, 5, 1, 6]
+            for p in test_positions:
+                self.position = p    
+                self.set_START(True)
+                self.write(con)
+                while not self.is_ACK():
+                    self.read(con)
+                self.set_start(False)
+                self.write(con)
+                self.read(con)
+                while not self.is_MC():
+                    self.read(con)
+                time.sleep(10)
             #while not self.is_HALT():
             #    await self.read(con)
     
