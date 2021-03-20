@@ -74,52 +74,52 @@ class LamaTest(object):
 
         # Get the status bits
     def is_HALT(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_HALT) 
+        return bool(self._input_regs[0] & LamaTest.S_HALT) 
 
     def is_ACK(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_ACK)
+        return bool(self._input_regs[0] & LamaTest.S_ACK)
 
     def is_MC(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_MC)
+        return bool(self._input_regs[0] & LamaTest.S_MC)
 
     def is_TEACH(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_TEACH)
+        return bool(self._input_regs[0] & LamaTest.S_TEACH)
     
     def is_MOV(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_MOV)
+        return bool(self._input_regs[0] & LamaTest.S_MOV)
     
     def is_FOLERR(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_FOLERR)
+        return bool(self._input_regs[0] & LamaTest.S_FOLERR)
 
     def is_STILL(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_STILL)
+        return bool(self._input_regs[0] & LamaTest.S_STILL)
     
     def is_REF(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_REF)
+        return bool(self._input_regs[0] & LamaTest.S_REF)
 
     def is_ENABLED(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_ENABLED)
+        return bool(self._input_regs[0] & LamaTest.S_ENABLED)
 
     def is_OPEN(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_OPEN)
+        return bool(self._input_regs[0] & LamaTest.S_OPEN)
 
     def is_WARN(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_WARN)
+        return bool(self._input_regs[0] & LamaTest.S_WARN)
 
     def is_FAULT(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_FAULT)
+        return bool(self._input_regs[0] & LamaTest.S_FAULT)
 
     def is_VLOAD(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_VLOAD)
+        return bool(self._input_regs[0] & LamaTest.S_VLOAD)
 
     def is_FCT(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_FCT)
+        return bool(self._input_regs[0] & LamaTest.S_FCT)
 
     def is_OPM1(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_OPM1)
+        return bool(self._input_regs[0] & LamaTest.S_OPM1)
 
     def is_OPM2(self) -> bool:
-        return bool(self._input_regs[0] & Lama.S_OPM2)
+        return bool(self._input_regs[0] & LamaTest.S_OPM2)
 
     # Set bits for operation
     def set_bit(self, bit_to_set: int, bit_value: bool):
@@ -130,46 +130,46 @@ class LamaTest(object):
             self._output_regs[0] &= ~bit_to_set
             
     def set_HALT(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_HALT, setbit)
+        self.set_bit(LamaTest.C_HALT, setbit)
 
     def set_START(self, setbit: bool) -> None:
-       self.set_bit(Lama.C_START, setbit)
+       self.set_bit(LamaTest.C_START, setbit)
        
     def set_HOM(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_HOM, setbit)
+        self.set_bit(LamaTest.C_HOM, setbit)
 
     def set_JOGP(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_JOGP, setbit)
+        self.set_bit(LamaTest.C_JOGP, setbit)
 
     def set_JOGN(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_JOGN, setbit)
+        self.set_bit(LamaTest.C_JOGN, setbit)
 
     def set_TEACH(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_TEACH, setbit)
+        self.set_bit(LamaTest.C_TEACH, setbit)
 
     def set_CLEAR(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_CLEAR, setbit)
+        self.set_bit(LamaTest.C_CLEAR, setbit)
 
     def set_ENABLE(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_ENABLE, setbit)
+        self.set_bit(LamaTest.C_ENABLE, setbit)
 
     def set_STOP(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_STOP, setbit)
+        self.set_bit(LamaTest.C_STOP, setbit)
 
     def set_BRAKE(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_BRAKE, setbit)
+        self.set_bit(LamaTest.C_BRAKE, setbit)
 
     def set_RESET(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_RESET, setbit)
+        self.set_bit(LamaTest.C_RESET, setbit)
 
     def set_LOCK(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_LOCK, setbit)
+        self.set_bit(LamaTest.C_LOCK, setbit)
 
     def set_OPM1(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_OPM1, setbit)
+        self.set_bit(LamaTest.C_OPM1, setbit)
 
     def set_OPM2(self, setbit: bool) -> None:
-        self.set_bit(Lama.C_OPM2, setbit)
+        self.set_bit(LamaTest.C_OPM2, setbit)
     
     def set_clear(self) -> None:
         self._output_regs=[0,0,0,0]
