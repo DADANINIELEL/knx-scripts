@@ -9,7 +9,7 @@ def bits(number: int = 0):
     ''' Devuelve los bits de un registro modbus (2 bytes)
     '''
     for i in range(16):
-        yield (number << i) & 1
+        yield (number >> i) & 1
 
 sconspos = 'OPM1 OPM2 FCT VLoad Fault Warn Op_En Enable Ref Still FolErr Mov Teach MC ACK Halt'
 cconcpos = 'OPM1 OPM2 Lock - Reset Brake Stop Enable - Clear Teach JogN JogP Hom Start Halt'
@@ -51,14 +51,14 @@ class LamaTest(object):
         me_cconcpos = ''
         for i,bit in enumerate(bits(self._input_regs[0])):
             if bit:
-                me_sconspos += f'[bright_white]{sconspos_textos[i]}[/]'
+                me_sconspos += f'[bright_white]{sconspos_textos[15-i]}[/]'
             else:
-                me_sconspos += f'[blue]{sconspos_textos[i]}[/]'
+                me_sconspos += f'[blue]{sconspos_textos[15-i]}[/]'
         for i,bit in enumerate(bits(self._output_regs[0])):
             if bit:
-                me_cconcpos += f'[bright_white]{cconcpos_textos[i]}[/]'
+                me_cconcpos += f'[bright_white]{cconcpos_textos[15-i]}[/]'
             else:
-                me_cconcpos += f'[blue]{cconcpos_textos[i]}[/]'
+                me_cconcpos += f'[blue]{cconcpos_textos[15-i]}[/]'
         me_position = self.position
         me_str = f'SCONSPOS:{me_sconspos}\n'+f'CCONCPOS:{me_cconcpos}\n'+f'POS:{me_position}'
         return me_str
