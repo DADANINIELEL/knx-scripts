@@ -3,7 +3,7 @@ import time
 import rich
 from rich import print
 from rich.text import Text
-from socket import create_connection
+import socket
 from umodbus import conf
 from umodbus.client import tcp
 
@@ -46,6 +46,7 @@ class LamaTest(object):
         self.position = 0
         self.ip = client_ip
         self.port = client_port
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def __str__(self) -> str:
         global sconspos_textos, cconcpos_textos
@@ -176,30 +177,57 @@ class LamaTest(object):
     def set_clear_regs(self) -> None:
         self._output_regs=[0,0,0,0]
     
-    def read(self, client):
+    def read(self):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
-        response = tcp.send_message(message, client)
+        try:
+            response = tcp.send_message(message, self.client)
+        except OSError as e:
+            print('No he poodido escribir. Error {e}')
+            try:
+                self.client.connect(address=(self.ip, self.port))
+            except OSError as e:
+                print('No he poodido conectar. Error {e}')
+                time.sleep(5)
+                continue
+        else:
+            print('Socket conectado')
+            continue    
         os.system('clear')
         print(Text.from_markup(str(self)))            
         self._input_regs=response
     
-    def write(self, client):
+    def write(self):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
-        response = tcp.send_message(message, client)
+        try:
+            response = tcp.send_message(message, self.client)
+        except OSError as e:
+            print('No he poodido leer. Error {e}')
+            try:
+                self.client.connect(address=(self.ip, self.port))
+            except OSError as e:
+                print('No he poodido conectar. Error {e}')
+                time.sleep(5)
+                continue
+        else:
+            print('Socket conectado')
+            continue
         os.system('clear')
         print(Text.from_markup(str(self)))            
     
+    def exit_lama(self):
+        self.client.shutdown(1)
+        self.client.close()
+        
     def reset_errors(self):
-        with create_connection(address=(self.ip, self.port)) as con:
-            self.read(con)
-            self.set_RESET(True)
-            self.write(con)
-            time.sleep(1)
-            self.read(con)
-            if self.is_FAULT():
-                return 1
-            else:
-                return 0
+        self.read()
+        self.set_RESET(True)
+        self.write()
+        time.sleep(1)
+        self.read()
+        if self.is_FAULT():
+            return 1
+        else:
+            return 0
             
     def move_to_pos(self, pos: int) -> int:
         # activate pos
@@ -210,26 +238,25 @@ class LamaTest(object):
         self.set_ENABLE(True)
         self.set_STOP(True)
         self.set_HALT(True)
-        with create_connection(address=(self.ip, self.port)) as con:
-            self.read(con)
-            time.sleep(3)
-            self.write(con)
-            time.sleep(3)
-            self.read(con)
-            time.sleep(3)
-            test_positions = [1, 3, 6, 1, 6, 2, 5, 1, 6]
-            for p in test_positions:
-                self.position = p    
-                self.set_START(True)
-                self.write(con)
-                while not self.is_ACK():
-                    self.read(con)
-                self.set_START(False)
-                self.write(con)
-                self.read(con)
-                while not self.is_MC():
-                    self.read(con)
-                time.sleep(10)
+        self.read()
+        time.sleep(3)
+        self.write()
+        time.sleep(3)
+        self.read()
+        time.sleep(3)
+        test_positions = [1, 3, 6, 1, 6, 2, 5, 1, 6]
+        for p in test_positions:
+            self.position = p    
+            self.set_START(True)
+            self.write()
+            while not self.is_ACK():
+                self.read()
+            self.set_START(False)
+            self.write()
+            self.read()
+            while not self.is_MC():
+                self.read()
+            time.sleep(10)
             #while not self.is_HALT():
             #    await self.read(con)
     
@@ -238,3 +265,4 @@ class LamaTest(object):
 lama_1 = LamaTest('192.168.25.101', 502) #init 192.168.25.101:502   
 print(Text.from_markup(str(lama_1)))
 lama_1.move_to_pos(1)
+lama_1.exit_lama()
