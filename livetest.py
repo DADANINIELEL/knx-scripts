@@ -1,4 +1,5 @@
 import os
+from sys import __breakpointhook__
 import time
 import rich
 from rich import print
@@ -179,35 +180,41 @@ class LamaTest(object):
     
     def read(self):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
-        try:
-            response = tcp.send_message(message, self.client)
-        except OSError as e:
-            print('No he poodido escribir. Error {e}')
+        while True:
             try:
-                self.client.connect(address=(self.ip, self.port))
+                response = tcp.send_message(message, self.client)
+                break
             except OSError as e:
-                print('No he poodido conectar. Error {e}')
-                time.sleep(5)
-                continue
-        else:
-            print('Socket conectado')
-            continue    
+                print('No he poodido escribir. Error {e}')
+                while True:
+                    try:
+                        self.client.connect(address=(self.ip, self.port))
+                        print('Socket conectado')
+                        break
+                    except OSError as e:
+                        print('No he poodido conectar. Error {e}')
+                        time.sleep(5)
+                        continue
         os.system('clear')
         print(Text.from_markup(str(self)))            
         self._input_regs=response
     
     def write(self):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
-        try:
-            response = tcp.send_message(message, self.client)
-        except OSError as e:
-            print('No he poodido leer. Error {e}')
+        while True:
             try:
-                self.client.connect(address=(self.ip, self.port))
+                response = tcp.send_message(message, self.client)
+                break
             except OSError as e:
-                print('No he poodido conectar. Error {e}')
-                time.sleep(5)
-                continue
+                print('No he poodido leer. Error {e}')
+                while True:
+                    try:
+                        self.client.connect(address=(self.ip, self.port))
+                        break
+                    except OSError as e:
+                        print('No he poodido conectar. Error {e}')
+                        time.sleep(5)
+                        continue
         else:
             print('Socket conectado')
             continue
