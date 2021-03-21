@@ -210,14 +210,12 @@ class LamaTest(object):
                 while True:
                     try:
                         self.client.connect(address=(self.ip, self.port))
+                        print('Socket conectado')
                         break
                     except OSError as e:
                         print('No he poodido conectar. Error {e}')
                         time.sleep(5)
                         continue
-        else:
-            print('Socket conectado')
-            continue
         os.system('clear')
         print(Text.from_markup(str(self)))            
     
