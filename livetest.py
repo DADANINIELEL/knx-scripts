@@ -188,7 +188,7 @@ class LamaTest(object):
                 print('No he poodido escribir. Error {e}')
                 while True:
                     try:
-                        self.client.connect(address=(self.ip, self.port))
+                        self.client.connect((self.ip, self.port))
                         print('Socket conectado')
                         break
                     except OSError as e:
@@ -209,7 +209,7 @@ class LamaTest(object):
                 print('No he poodido leer. Error {e}')
                 while True:
                     try:
-                        self.client.connect(address=(self.ip, self.port))
+                        self.client.connect((self.ip, self.port))
                         print('Socket conectado')
                         break
                     except OSError as e:
