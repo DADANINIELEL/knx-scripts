@@ -180,6 +180,7 @@ class LamaTest(object):
     
     def read(self):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
+        time.sleep(.5)
         while True:
             try:
                 response = tcp.send_message(message, self.client)
@@ -201,6 +202,7 @@ class LamaTest(object):
     
     def write(self):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
+        time.sleep(.5)
         while True:
             try:
                 response = tcp.send_message(message, self.client)
