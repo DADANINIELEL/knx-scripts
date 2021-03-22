@@ -44,7 +44,7 @@ class LamaTest(object):
         #incluir argumentos para inicializar la lama modbusTCP, IP:port
         self._input_regs = [0, 0, 0, 0]  # SPOS SCON
         self._output_regs = [0, 0, 0, 0]  # CPOS CCON
-        self.position = 0
+        self._pos = 0
         self.ip = client_ip
         self.port = client_port
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -69,11 +69,11 @@ class LamaTest(object):
 
     @property
     def position(self):
-        return self._position
+        return self._pos
     
     @position.setter
     def position(self, value: int):
-        self._position = value
+        self._pos = value
         self._output_regs[1] = value << 8
 
         # Get the status bits
