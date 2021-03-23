@@ -131,7 +131,7 @@ class LamaTest(object):
         if bit_value:
             self._output_regs[0] |= bit_to_set
         else:
-            self._output_regs[0] &= ~bit_to_set
+            self._output_regs[0] &= ((~bit_to_set) & 0b1111111111111111)
             
     def set_HALT(self, setbit: bool) -> None:
         self.set_bit(LamaTest.C_HALT, setbit)
