@@ -207,6 +207,7 @@ class LamaTest(object):
         time.sleep(.5)
         while True:
             try:
+                print(message)
                 response = tcp.send_message(message, self.client)
                 break
             except OSError as e:
