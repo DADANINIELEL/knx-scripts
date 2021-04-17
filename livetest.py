@@ -203,10 +203,10 @@ class LamaTest(object):
     
     def write(self):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
-        print(self._output_regs)
         time.sleep(.5)
         while True:
             try:
+                print(self._output_regs)
                 print(message)
                 response = tcp.send_message(message, self.client)
                 break
