@@ -180,7 +180,7 @@ class LamaTest(object):
     
     def read(self):
         message = tcp.read_holding_registers(slave_id=1, starting_address=0, quantity=4)
-        time.sleep(.5)
+        # time.sleep(.5)
         while True:
             try:
                 response = tcp.send_message(message, self.client)
@@ -194,7 +194,7 @@ class LamaTest(object):
                         break
                     except OSError as e:
                         print('No he poodido conectar. Error {e}')
-                        time.sleep(5)
+                        time.sleep(1)
                         continue
         os.system('clear')
         print(self._output_regs)
@@ -203,12 +203,15 @@ class LamaTest(object):
     
     def write(self):
         message = tcp.write_multiple_registers(slave_id=1, starting_address=0, values=self._output_regs)    
-        time.sleep(.5)
+        # time.sleep(.5)
         while True:
             try:
                 print(self._output_regs)
                 print(message)
-                response = tcp.send_message(message, self.client)
+                try:
+                    response = tcp.send_message(message, self.client)
+                except ValueError as ve:
+                    print(response)
                 break
             except OSError as e:
                 print('No he poodido leer. Error {e}')
@@ -249,11 +252,11 @@ class LamaTest(object):
         self.set_STOP(True)
         self.set_HALT(True)
         self.read()
-        time.sleep(3)
+        # time.sleep(3)
         self.write()
-        time.sleep(3)
+        # time.sleep(3)
         self.read()
-        time.sleep(3)
+        # time.sleep(3)
         test_positions = [1, 3, 6, 1, 6, 2, 5, 1, 6]
         for p in test_positions:
             self.position = p    
@@ -266,7 +269,7 @@ class LamaTest(object):
             self.read()
             while not self.is_MC():
                 self.read()
-            time.sleep(10)
+            # time.sleep(10)
             #while not self.is_HALT():
             #    await self.read(con)
     
