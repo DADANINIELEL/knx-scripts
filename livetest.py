@@ -262,8 +262,8 @@ class LamaTest(object):
             self.position = p    
             self.set_START(True)
             self.write()
-            while not self.is_ACK():
-                self.read()
+            # while not self.is_ACK():
+            #    self.read()
             self.set_START(False)
             self.write()
             self.read()
